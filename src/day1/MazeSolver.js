@@ -1,81 +1,58 @@
+"use strict";
 // Base Case :
 //  - Wall
 //  - Off the map
 //  - Endpoint
 //  - already seen it
-
-// Recursion
-//  - Pre-recurse :
-//      -
-//      -
-//  - Post-recurse :
-//      -
-//      -
-type Point = {
-    x: number;
-    y: number;
-};
-const offsets: Point[] = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = solve;
+var offsets = [
     { x: 0, y: 1 },
     { x: 0, y: -1 },
     { x: 1, y: 0 },
     { x: -1, y: 0 },
 ];
-function walk(
-    maze: string[],
-    wall: string,
-    curr: Point,
-    end: Point,
-    seen: boolean[][],
-    path: Point[],
-): boolean {
-    if (maze[curr.y][curr.x] === wall) return false;
-    if (seen[curr.y][curr.x]) return false;
-    if (
-        curr.x >= maze[0].length ||
+function walk(maze, wall, curr, end, seen, path) {
+    if (maze[curr.y][curr.x] === wall)
+        return false;
+    if (seen[curr.y][curr.x])
+        return false;
+    if (curr.x >= maze[0].length ||
         curr.x < 0 ||
         curr.y >= maze.length ||
-        curr.y < 0
-    )
+        curr.y < 0)
         return false;
-
     if (curr.x == end.x && curr.y == end.y) {
         path.push(end);
         return true;
     }
-
     seen[curr.y][curr.x] = true;
     path.push(curr);
-    for (const offset of offsets) {
-        const next: Point = {
+    for (var _i = 0, offsets_1 = offsets; _i < offsets_1.length; _i++) {
+        var offset = offsets_1[_i];
+        var next = {
             x: curr.x + offset.x,
             y: curr.y + offset.y,
         };
-        if (walk(maze, wall, next, end, seen, path)) return true;
+        if (walk(maze, wall, next, end, seen, path))
+            return true;
     }
     path.pop();
     return false;
 }
-
-export default function solve(
-    maze: string[],
-    wall: string,
-    start: Point,
-    end: Point,
-): Point[] {
-    const path: Point[] = [];
-    const seen: boolean[][] = [];
-    for (let y = 0; y < maze.length; ++y) {
+function solve(maze, wall, start, end) {
+    var path = [];
+    var seen = [];
+    for (var y = 0; y < maze.length; ++y) {
         seen.push([]);
-        for (let x = 0; x < maze[0].length; ++x) {
+        for (var x = 0; x < maze[0].length; ++x) {
             seen[y][x] = false;
         }
     }
     walk(maze, wall, start, end, seen, path);
     return path;
 }
-
-const maze = [
+var maze = [
     "xxxxxxxxxx x",
     "x        x x",
     "x        x x",
@@ -83,8 +60,7 @@ const maze = [
     "x          x",
     "x xxxxxxxxxx",
 ];
-
-const mazeResult = [
+var mazeResult = [
     { x: 10, y: 0 },
     { x: 10, y: 1 },
     { x: 10, y: 2 },
@@ -101,5 +77,4 @@ const mazeResult = [
     { x: 1, y: 4 },
     { x: 1, y: 5 },
 ];
-
 console.log(solve(maze, "x", { x: 10, y: 0 }, { x: 1, y: 5 }));
